@@ -8,6 +8,8 @@ import com.github.fge.jsonpatch.JsonPatchException;
 import com.sudria.demo.domain.Animal;
 import com.sudria.demo.domain.AnimalService;
 import java.util.List;
+
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1")
+@Api("API gestion de zoo")
+
 public class Controller {
 
   private AnimalService animalService;
@@ -31,6 +35,14 @@ public class Controller {
     this.animalService = animalService;
     this.objectMapper = objectMapper;
   }
+  @ApiOperation(value = "View a list of available animals", response = List.class)
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successfully retrieved list"),
+          @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+          @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+          @ApiResponse(code = 404, message = "The resource you were trying toreach is not found")
+  })
+  @ApiParam(value = "Animal object store in database table", required = true)
 
   @RequestMapping(value = "/animals", method = RequestMethod.GET)
   public ResponseEntity<List<Animal>> getAnimals() {
@@ -40,6 +52,7 @@ public class Controller {
   @RequestMapping(value = "/animals/{id}", method = RequestMethod.GET)
   public ResponseEntity<Animal> getAnimalsById( @PathVariable(value = "id") Long id) {
     try {
+      log.info("********************** inside the controller ****************************");
       return new ResponseEntity<>(animalService.getAnimals(id), HttpStatus.OK);
     } catch (NotFoundException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Animal Not Found", e);
@@ -50,6 +63,7 @@ public class Controller {
   public ResponseEntity<Animal> createAnimals(
       @RequestBody Animal animal) {
     animalService.addAnimal(animal);
+    animal = animalService.addAnimal(animal);
     return new ResponseEntity<>(animal, HttpStatus.CREATED);
   }
 

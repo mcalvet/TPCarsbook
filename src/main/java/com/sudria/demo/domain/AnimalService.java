@@ -2,10 +2,13 @@ package com.sudria.demo.domain;
 
 import com.sudria.demo.infrastructure.AnimalDao;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class AnimalService {
 
@@ -21,6 +24,7 @@ public class AnimalService {
 
   @Cacheable("animals")
   public Animal getAnimals(Long id) throws NotFoundException {
+    log.info("**************inside of the AnimalService getAnimals by id***************** ");
     return animalDao.findAnimals(id);
   }
 
