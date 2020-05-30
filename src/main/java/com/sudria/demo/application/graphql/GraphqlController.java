@@ -23,10 +23,10 @@ public class GraphqlController {
     //déclarer une instance de la classe graphql
     private GraphQL graphQL;
     //genere le constructeur
-    public GraphqlController(AnimalResolver animalResolver) {
+    public GraphqlController(CarResolver carResolver) {
         GraphQLSchema schema = new GraphQLSchemaGenerator() //déclarer schéma un schéma
 //        .withBasePackages("com.sudria.demo.graphql")
-                .withOperationsFromSingletons(animalResolver)
+                .withOperationsFromSingletons(carResolver)
                 .generate();
         graphQL = GraphQL.newGraphQL(schema).build();
         log.info("Generated GraphQL schema using SPQR");
